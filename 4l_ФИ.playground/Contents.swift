@@ -4,62 +4,72 @@ class Car {
     var model : String
     var year : Int
     var engine : String
+    var transmission : Transmission
+    var color : String
     var isEngineStart : Bool = false
-    var theTrunk : Space?
-    var isTurbo : Bool = false
     
-    var trunkCar : Car?
-    var sportCar : Car?
-
-    func autoActions(action: Actions) {
-        switch action {
-        case .startEngine:
-            isEngineStart = isEngineStart ? false : true
-        case .makeSportCar:
-            sportCar?.isTurbo = true
-            sportCar?.isEngineStart = true
-        case .makeTrunkCar(let space):
-            trunkCar?.isEngineStart = true
-            trunkCar?.theTrunk = space
-            break
-        }
+    enum Transmission {
+        case automatic
+        case manual
     }
-    init(model: String, year: Int, engine: String) {
+
+    init(model: String, year: Int, engine: String, transmission: Transmission, color: String) {
         self.model = model
         self.year = year
         self.engine = engine
+        self.transmission = transmission
+        self.color = color
         
     }
     
     func infoAboutCar(){
-        if (trunkCar != nil){
-            print("это грузовик : \n \(model), \n \(engine), \n \(isEngineStart), \n \(String(describing: theTrunk)), \n \(year)")
+            print("это автомобиль : \n \(model), \n \(engine), \n \(isEngineStart), \n \(year), \n \(transmission), \n \(color)")
     }
-        else{
-            print("это спорткар : \n \(model), \n \(engine), \n \(isEngineStart), \n \(isTurbo), \n \(year)")
+    
+    func startEngine(){
+        if isEngineStart{
+            isEngineStart = false
+        }else{
+            isEngineStart = true
         }
     }
-}
-
-enum Actions{
-    case startEngine
-    case makeSportCar()
-    case makeTrunkCar(space: Space)
     
+    struct Space{
+        var freeSpace : Int
+        var filledSpace : Int
+    }
 }
-struct Space{
-    var freeSpace : Int
-    var filledSpace : Int
+class SportCar: Car {
+    var isTurbo : Bool
+    
+    init(model: String, year: Int, engine: String, transmission: Transmission, color: String, isTurbo: Bool) {
+        self.isTurbo = isTurbo
+        super.init(model: model, year: year, engine: engine, transmission: transmission, color: color)
+    }
+    
+    override func infoAboutCar() {
+        print("это спорткар : \n \(model), \n \(engine), \n \(isEngineStart), \n \(year), \n \(transmission), \n \(color), \n \(isTurbo)")
+    }
 }
 
-var car : Car = Car(model: "Nissan", year: 1990, engine: "Oil")
-car.sportCar = car
-car.autoActions(action: .makeSportCar())
+class TrunkCar: Car {
+    var theTrunk : Space
+    
+    init(model: String, year: Int, engine: String, transmission: Transmission, color: String, theTrunk: Space) {
+        self.theTrunk = theTrunk
+        super.init(model: model, year: year, engine: engine, transmission: transmission, color: color)
+    }
+    
+    override func infoAboutCar() {
+        print("это грузовой автомобиль : \n \(model), \n \(engine), \n \(isEngineStart), \n \(year), \n \(transmission), \n \(color), \n \(theTrunk)")
+    }
+}
 
-var trunkCar : Car = Car(model: "Volvo", year: 2001, engine: "Disel")
-trunkCar.trunkCar = trunkCar
-trunkCar.autoActions(action: .makeTrunkCar(space: Space(freeSpace: 2000, filledSpace: 500)))
+let turboCar: SportCar = SportCar (model: "Nissan", year: 2000, engine: "Oil", transmission: .automatic, color: "Red", isTurbo: true)
+turboCar.infoAboutCar()
 
-car.infoAboutCar()
+let trunkCar: TrunkCar = TrunkCar (model: "Saab", year: 2010, engine: "Disel", transmission: .manual, color: "Black", theTrunk: Car.Space(freeSpace: 2000, filledSpace: 500))
 trunkCar.infoAboutCar()
+
+
 
