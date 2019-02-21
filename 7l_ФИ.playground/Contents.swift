@@ -32,16 +32,12 @@ class BuyCar {
             //
             throw BuyCarError.outOfStock
         }
+        
         guard item.price <= coinsDeposited else {
             //return(nil, BuyCarError.insufficientFunds(coinsNeeded: item.price - coinsDeposited))
             throw BuyCarError.insufficientFunds(coinsNeeded: item.price - coinsDeposited)
         }
         
-        coinsDeposited -= item.price
-        var newItem = item
-        newItem.count -= 1
-        cars[name] = newItem
-        return newItem
     }
 }
 
